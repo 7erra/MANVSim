@@ -1,9 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/screens/qr_screen.dart';
 
 import 'name_screen.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+
+
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+
+  String _url = '';
+  String _tan = "";
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +29,16 @@ class LoginScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: TextEditingController(text: _tan),
+                decoration: const InputDecoration(
                   labelText: 'TAN',
                 ),
               ),
               const SizedBox(height: 16),
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: TextEditingController(text: _url),
+                decoration: const InputDecoration(
                   labelText: 'Server URL',
                 ),
               ),
@@ -36,7 +50,26 @@ class LoginScreen extends StatelessWidget {
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.qr_code_scanner),
                       label: const Text('Scan QR Code'),
-                      onPressed: () {},
+                      onPressed: () async {
+
+                        final scannedText = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QRScreen(),
+                          ),
+                        );
+                        if (scannedText != null) {
+
+                          final url = scannedText.split('/').sublist(0, scannedText.split('/').length - 1).join('/');
+                          final tan = scannedText.split('/').last;
+
+                          setState(() {
+                            _url = url;
+                            _tan = tan;
+                          });
+                        }
+
+                      },
                     ),
                   ),
                   const SizedBox(width: 8),

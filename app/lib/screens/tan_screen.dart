@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/screens/qr_screen.dart';
 import 'package:manvsim/widgets/logout_button.dart';
 
-class TanScreen extends StatelessWidget {
+class TanScreen extends StatefulWidget {
   const TanScreen({super.key});
+
+  @override
+  _TanScreenState createState() => _TanScreenState();
+
+}
+
+class _TanScreenState extends State<TanScreen> {
+
+  String _tan = "";
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +28,9 @@ class TanScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                controller: TextEditingController(text: _tan),
+                decoration: const InputDecoration(
                   labelText: 'TAN',
                 ),
               ),
@@ -27,7 +38,22 @@ class TanScreen extends StatelessWidget {
               ElevatedButton.icon(
                 icon: const Icon(Icons.qr_code_scanner),
                 label: const Text('Scan QR Code'),
-                onPressed: () {},
+                onPressed: () async {
+
+                  final scannedText = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => QRScreen(),
+                    ),
+                  );
+                  if (scannedText != null) {
+
+                    setState(() {
+                      _tan = scannedText;
+                    });
+                  }
+
+                },
               ),
             ],
           ),

@@ -9,6 +9,7 @@ import Navbar from "react-bootstrap/Navbar"
 import { NavDropdown } from "react-bootstrap"
 import { isLoggedIn } from "../utils"
 import { ReactElement } from "react"
+import { deleteStorageItem, getStorageItem } from "../storage"
 
 function NavLink({ to, name }: { to: string; name: string }): ReactElement {
   return (
@@ -26,8 +27,8 @@ export default function Root(): ReactElement {
   }
 
   function logout() {
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
+    deleteStorageItem("token")
+    deleteStorageItem("user")
     navigate("login")
   }
 
@@ -45,7 +46,7 @@ export default function Root(): ReactElement {
               <NavLink to="/scenario" name="Szenario" />
               <NavDropdown title="Benutzer">
                 <NavDropdown.Header>
-                  {localStorage.getItem("user")}
+                  {getStorageItem("user")}
                 </NavDropdown.Header>
                 <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
               </NavDropdown>

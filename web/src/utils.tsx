@@ -1,3 +1,5 @@
+import { getStorageItem } from "./storage"
+
 export function isLoggedIn(): boolean {
-  return localStorage.getItem("token") !== null
+  return getStorageItem("token") !== null
 }

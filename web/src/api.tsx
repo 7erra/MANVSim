@@ -26,7 +26,7 @@ export async function tryFetchApi(
   return fetch(apiRequest)
 }
 
-export async function tryFetchJson<T = object>(
+export async function tryFetchJson<T = unknown>(
   url: string,
   body: RequestInit = {},
 ): Promise<T> {

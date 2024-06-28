@@ -1,6 +1,6 @@
 import { redirect } from "react-router"
 import { CsrfToken, isCsrfToken, isLoginResponse } from "../types"
-import { tryFetchJson } from "./util"
+import { api, tryFetchJson } from "./util"
 
 export async function getCsrfToken(): Promise<string> {
   const json = await tryFetchJson<CsrfToken>("csrf")

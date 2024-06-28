@@ -1,6 +1,6 @@
 import { getStorageItem } from "../storage"
 
-const api = "/web/"
+export const api = "/web/"
 
 export async function tryFetchApi(
   url: string,

@@ -1,11 +1,10 @@
 name: Server Lint & Code Quality & Test
-on: 
+on:
   push:
     branches:
       - main
       - feature/server/**
       - bug/server/**
-
 
 jobs:
   test:
@@ -36,7 +35,7 @@ jobs:
         working-directory: server
         run: |
           pipenv run lint
-  
+
       - name: Initialize database
         working-directory: server
         run: |
@@ -47,9 +46,9 @@ jobs:
         working-directory: server
         run: |
           pipenv run python dbsetup.py
-    
+
       # Test execution component
       - name: Run pytest
-        working-directory: server/execution
+        working-directory: server
         run: |
-          pipenv run pytest tests/
+          pipenv run pytest ./**/tests/

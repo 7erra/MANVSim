@@ -65,10 +65,10 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve(path):
-        if path != "" and os.path.exists(app.static_folder + "/" + path):
-            return send_from_directory(app.static_folder, path)
+        if path != "" and os.path.exists(app.static_folder + "/" + path):  # type: ignore
+            return send_from_directory(app.static_folder, path)  # type: ignore
         elif path == "/" or path == "":
-            return send_from_directory(app.static_folder, "index.html")
+            return send_from_directory(app.static_folder, "index.html")  # type: ignore
         elif path.startswith("/api"):
             return (
                 "API Endpoint not found. Please refactor your request or contact the admin",

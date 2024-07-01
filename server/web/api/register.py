@@ -8,6 +8,8 @@ from flask_wtf.csrf import CSRFError, generate_csrf
 from werkzeug.exceptions import BadRequest, HTTPException, NotFound
 from string_utils import booleanize
 
+from event_logging.event import Event
+from utils import time
 import models
 from app_config import csrf
 from execution.entities.execution import Execution
@@ -98,6 +100,11 @@ def change_execution_status(id: int, new_status: str):
     execution = try_get_execution(id)
     try:
         execution.status = Execution.Status[new_status]
+        if execution.status == Execution.Status.FINISHED:
+            Event.execution_finished(execution.id, time=time.current_time_s()).log()
+        elif execution.status == Execution.Status.RUNNING:
+            Event.execution_started(execution.id, time=time.current_time_s()).log()
+
     except KeyError:
         raise BadRequest(
             f"Not an option for the execution status: '{new_status}'. Possible values are: {str.join(", ", [e.name for e in Execution.Status])}")

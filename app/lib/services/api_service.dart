@@ -3,6 +3,7 @@ import 'package:manv_api/api.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manvsim/models/tan_user.dart';
+import 'package:manvsim/models/types.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/login_screen.dart';
@@ -89,6 +90,20 @@ class ApiService {
         (Route<dynamic> route) => false, // Removes all previous routes
       );
     }
+  }
+
+  Future<StartTimes?> getStartTimes() async {
+    return api.scenarioStartTimeGet().then((response) {
+      return response != null
+          ? (
+              startTime: DateTime.fromMillisecondsSinceEpoch(
+                  response.startingTime),
+              arrivalTime: response.travelTime != null
+                  ? DateTime.fromMillisecondsSinceEpoch(response.travelTime!)
+                  : null
+            )
+          : null;
+    });
   }
 
   /// Handles some common error codes

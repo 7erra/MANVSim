@@ -30,7 +30,7 @@ def create_test_execution(pending: bool = True):
     loc_3 = Location(id=3, name="Blauer Rucksack", picture_ref="dummy_blau.png", resources=[res_5])
     loc_4 = Location(id=4, name="EKG", picture_ref="dummy_ekg.png", resources=[res_1])
     loc_5 = Location(id=5, name="Holstein Stadion", picture_ref="dummy_location.png")
-    loc_1 = Location(id=1, name="RTW", picture_ref="dummy_rtw.jpg", resources=[res_3], sub_locations={loc_2, loc_3, loc_4})
+    loc_1 = Location(id=1, name="RTW", picture_ref="dummy_rtw.jpg", resources=[res_3], sub_locations={loc_2, loc_4})
 
     # Roles
     role_1 = Role(id=1, name="Notärzt:in", short_name="NA", power=400)
@@ -44,10 +44,10 @@ def create_test_execution(pending: bool = True):
                           accessible_locations={loc_2, loc_3, loc_4}, role=role_1, alerted=False,
                           activation_delay_sec=10)
     else:
-        player_1 = Player(tan="987ZYX", name="Frank Huch", location=loc_1, accessible_locations={loc_2, loc_3, loc_4},
+        player_1 = Player(tan="987ZYX", name="Frank Huch", location=loc_1, accessible_locations={loc_2, loc_4},
                           role=role_2, alerted=False, activation_delay_sec=10)
         player_2 = Player(tan="654WVU", name="Prof. Dr. Reinhard von Hanxleden", location=loc_1,
-                          accessible_locations={loc_2, loc_3, loc_4}, role=role_1, alerted=False,
+                          accessible_locations={loc_2, loc_4}, role=role_1, alerted=False,
                           activation_delay_sec=10)
 
     # Actions

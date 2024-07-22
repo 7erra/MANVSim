@@ -54,7 +54,7 @@ def __create_locations():
     insert(Location(id=3, name="Roter Rucksack",
                     picture_ref="media/static/rucksack_rot.jpg", location_id=0))
     insert(Location(id=4, name="Blauer Rucksack",
-                    picture_ref="media/static/rucksack_blau.jpg", location_id=0))
+                    picture_ref="media/static/rucksack_blau.jpg"))
     insert(Location(id=5, name="EKG", picture_ref="dummy_ekg.png",
                     location_id=0))
     insert(Location(id=6, name="Holstein Stadion",

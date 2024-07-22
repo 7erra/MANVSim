@@ -99,9 +99,9 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [ scenario_start_time ]
+                required: [ starting_time ]
                 properties:
-                  scenario_start_time:
+                  starting_time:
                     type: integer
                     description: Timestamp in ms since unix epoch.
                     example: 1672531200

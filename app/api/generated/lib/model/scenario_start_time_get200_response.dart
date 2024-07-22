@@ -13,12 +13,12 @@ part of manv_api;
 class ScenarioStartTimeGet200Response {
   /// Returns a new [ScenarioStartTimeGet200Response] instance.
   ScenarioStartTimeGet200Response({
-    required this.scenarioStartTime,
+    required this.startingTime,
     this.travelTime,
   });
 
   /// Timestamp in ms since unix epoch.
-  int scenarioStartTime;
+  int startingTime;
 
   /// Timestamp in ms since unix epoch. This parameter is only provided, if a player is alerted.
   ///
@@ -31,21 +31,21 @@ class ScenarioStartTimeGet200Response {
 
   @override
   bool operator ==(Object other) => identical(this, other) || other is ScenarioStartTimeGet200Response &&
-    other.scenarioStartTime == scenarioStartTime &&
+    other.startingTime == startingTime &&
     other.travelTime == travelTime;
 
   @override
   int get hashCode =>
     // ignore: unnecessary_parenthesis
-    (scenarioStartTime.hashCode) +
+    (startingTime.hashCode) +
     (travelTime == null ? 0 : travelTime!.hashCode);
 
   @override
-  String toString() => 'ScenarioStartTimeGet200Response[scenarioStartTime=$scenarioStartTime, travelTime=$travelTime]';
+  String toString() => 'ScenarioStartTimeGet200Response[startingTime=$startingTime, travelTime=$travelTime]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
-      json[r'scenario_start_time'] = this.scenarioStartTime;
+      json[r'starting_time'] = this.startingTime;
     if (this.travelTime != null) {
       json[r'travel_time'] = this.travelTime;
     } else {
@@ -73,7 +73,7 @@ class ScenarioStartTimeGet200Response {
       }());
 
       return ScenarioStartTimeGet200Response(
-        scenarioStartTime: mapValueOfType<int>(json, r'scenario_start_time')!,
+        startingTime: mapValueOfType<int>(json, r'starting_time')!,
         travelTime: mapValueOfType<int>(json, r'travel_time'),
       );
     }
@@ -122,7 +122,7 @@ class ScenarioStartTimeGet200Response {
 
   /// The list of required keys that must be present in a JSON.
   static const requiredKeys = <String>{
-    'scenario_start_time',
+    'starting_time',
   };
 }
 

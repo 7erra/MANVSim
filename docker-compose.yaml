@@ -6,7 +6,7 @@ services:
         context: .
         dockerfile: server/Dockerfile
     ports:
-        - "5000:5000"
+        - "5002:5002"
 
 
   app:

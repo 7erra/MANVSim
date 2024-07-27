@@ -24,7 +24,7 @@ class LoginScreenState extends State<LoginScreen> {
 
   final TanInputController _tanInputController = TanInputController();
   final TextEditingController _serverUrlController =
-      TextEditingController(text: "http://localhost:5000/api");
+      TextEditingController(text: "http://localhost:5002/api");
 
   String? _errorMessage;
 

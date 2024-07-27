@@ -16,8 +16,6 @@ WORKDIR /usr/src/app/server
 RUN chmod +x scripts/*.sh
 RUN make setup
 
-ENV LOAD_TEST_DATA=true
-
-EXPOSE 5000
-CMD pipenv run flask --app main --debug run --host=0.0.0.0 --port=5000
+EXPOSE 5002
+CMD pipenv run flask --app main --debug run --host=0.0.0.0 --port=5002
 

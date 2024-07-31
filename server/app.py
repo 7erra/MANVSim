@@ -1,15 +1,13 @@
-import json
 import logging
 import os
 import secrets
 
-from flask import send_from_directory, redirect, make_response, jsonify
+from flask import send_from_directory, redirect
 from apiflask import APIFlask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CSRFProtect, CSRFError
-from werkzeug.exceptions import HTTPException
+from flask_wtf.csrf import CSRFProtect
 
 from vars import LOG_LEVEL
 
@@ -68,36 +66,5 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
             return {"error": "Unknown endpoint"}, 404
         else:
             return redirect("/")
-
-    # -- ERROR Handling
-    @app.errorhandler(HTTPException)
-    def http_exception_handler(e: HTTPException):
-        """Return JSON instead of HTML for HTTP errors."""
-        # start with the correct headers and status code from the error
-        response = make_response(e.get_response())
-        # replace the body with JSON
-        response.data = json.dumps(
-            {
-                "error": e.description,
-            }
-        )
-        response.content_type = "application/json"
-        return response
-
-    @app.errorhandler(CSRFError)
-    def handle_csrf_error(error: CSRFError):
-        """Defines a specific handling for CSRF Errors"""
-        status = error.response or 400
-        return make_response(({"error": error.description}, status))
-
-    def handle_error(e):
-        return jsonify(error=str(e)), e.code
-
-    for code in range(400, 600):
-        # Register all client-/server error to be handled as json response.
-        try:
-            app.register_error_handler(code, handle_error)
-        except ValueError:
-            continue  # continue if code is not a valid HTTP status code.
 
     return app

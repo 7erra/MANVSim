@@ -23,6 +23,9 @@ class LoginOut(Schema):
 @web_api.input(UserIn, location="form")
 @web_api.output(LoginOut)
 def login(form_data):
+    """
+    Logs the user in and returns a token when the correct credentials are provided.
+    """
     username = form_data["username"]
     password = form_data["password"]
     # Get user object from database

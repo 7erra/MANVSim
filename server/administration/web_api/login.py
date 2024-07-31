@@ -1,28 +1,38 @@
-from apiflask import APIBlueprint
-from flask_api import status
+from apiflask import APIBlueprint, Schema, abort
 from flask_jwt_extended import create_access_token
 from flask_login import login_user
+from apiflask.fields import String
+from utils.schemas import CsrfSchema
 
 import models
-from utils.decorator import required, RequiredValueSource
 
 web_api = APIBlueprint("web_api-login", __name__)
 
 
+class UserIn(CsrfSchema):
+    username = String(required=True)
+    password = String(required=True)
+
+
+class LoginOut(Schema):
+    token = String()
+    username = String()
+
+
 @web_api.post("/login")
-@required("username", str, RequiredValueSource.FORM)
-@required("password", str, RequiredValueSource.FORM)
-def login(username: str, password: str):
+@web_api.input(UserIn, location="form")
+@web_api.output(LoginOut)
+def login(form_data):
+    username = form_data["username"]
+    password = form_data["password"]
     # Get user object from database
     user = models.WebUser.get_by_username(username)
     if user is None:
-        return {
-            "error": f"User with user name '{username}' does not exist"
-        }, status.HTTP_401_UNAUTHORIZED
+        abort(401, "User not found")
 
     # Check password
     if not user.check_password(password):
-        return {"error": "Incorrect password"}, status.HTTP_401_UNAUTHORIZED
+        abort(401, "Incorrect password")
 
     login_user(user)
     return {"token": create_access_token(identity="admin"), "username": username}, 200

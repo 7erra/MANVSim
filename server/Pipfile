@@ -19,6 +19,8 @@ pyright = "*"
 python-string-utils = "*"
 cachetools = "*"
 flask-cors = "*"
+watchdog = "*"
+apiflask = {extras = ["yaml"], version = "*"}
 
 [dev-packages]
 

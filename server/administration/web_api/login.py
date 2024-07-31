@@ -1,4 +1,4 @@
-from flask import Blueprint
+from apiflask import APIBlueprint
 from flask_api import status
 from flask_jwt_extended import create_access_token
 from flask_login import login_user
@@ -6,7 +6,7 @@ from flask_login import login_user
 import models
 from utils.decorator import required, RequiredValueSource
 
-web_api = Blueprint("web_api-login", __name__)
+web_api = APIBlueprint("web_api-login", __name__)
 
 
 @web_api.post("/login")
@@ -25,7 +25,4 @@ def login(username: str, password: str):
         return {"error": "Incorrect password"}, status.HTTP_401_UNAUTHORIZED
 
     login_user(user)
-    return {
-        "token": create_access_token(identity="admin"),
-        "username": username
-    }, 200
+    return {"token": create_access_token(identity="admin"), "username": username}, 200

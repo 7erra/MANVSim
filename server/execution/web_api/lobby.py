@@ -1,7 +1,8 @@
 from typing import List
 import logging
 
-from flask import Blueprint, Response
+from apiflask import APIBlueprint
+from flask import Response
 from string_utils import booleanize
 from werkzeug.exceptions import NotFound, BadRequest, InternalServerError
 
@@ -16,7 +17,7 @@ from execution.utils.util import try_get_execution
 from utils import time
 from utils.decorator import required, admin_only, RequiredValueSource, cache
 
-web_api = Blueprint("web_api-lobby", __name__)
+web_api = APIBlueprint("web_api-lobby", __name__)
 
 
 @web_api.post("/execution/activate")
@@ -35,9 +36,10 @@ def activate_execution(id: int):
 
 @web_api.get("/execution/active")
 def get_all_active_executions():
-    """ Endpoint to return all currently active executions. """
-    return [execution.to_dict(shallow=True) for execution
-            in run.active_executions.values()]
+    """Endpoint to return all currently active executions."""
+    return [
+        execution.to_dict(shallow=True) for execution in run.active_executions.values()
+    ]
 
 
 @web_api.get("/execution")
@@ -49,35 +51,41 @@ def get_execution(id: int):
     if id in run.active_executions.keys():
         execution = run.active_executions[id]
     else:
-        execution: bool | Execution = entityloader.load_execution(id, save_in_memory=False)
+        execution: bool | Execution = entityloader.load_execution(
+            id, save_in_memory=False
+        )
 
     if isinstance(execution, bool) and not execution:
         raise NotFound(f"Execution with id={id} does not exist")
     elif isinstance(execution, bool) and execution:
-        raise InternalServerError("Execution found but invalid return type "
-                                  "provided.")
+        raise InternalServerError(
+            "Execution found but invalid return type " "provided."
+        )
     else:
         return {
             "id": execution.id,
             "name": execution.name,
             "status": execution.status.name,
-            "players": [{
-                "tan": player.tan,
-                "name": player.name,
-                "alerted": player.alerted,
-                "logged_in": player.logged_in,
-                "role": {"id": player.role.id, "name": player.role.name} if player.role else None,
-                "location": {"id": player.location.id, "name": player.location.name} if player.location else None
-            } for player in execution.players.values()],
-            "roles": [{
-                "id": x.id,
-                "name": x.name
-            } for x in __get_roles()],
-            "locations": [{
-                "id": x.id,
-                "name": x.name
-            } for x in __get_top_level_locations()],
-            "notifications": execution.notifications
+            "players": [
+                {
+                    "tan": player.tan,
+                    "name": player.name,
+                    "alerted": player.alerted,
+                    "logged_in": player.logged_in,
+                    "role": {"id": player.role.id, "name": player.role.name}
+                    if player.role
+                    else None,
+                    "location": {"id": player.location.id, "name": player.location.name}
+                    if player.location
+                    else None,
+                }
+                for player in execution.players.values()
+            ],
+            "roles": [{"id": x.id, "name": x.name} for x in __get_roles()],
+            "locations": [
+                {"id": x.id, "name": x.name} for x in __get_top_level_locations()
+            ],
+            "notifications": execution.notifications,
         }
 
 
@@ -92,8 +100,7 @@ def create_execution(scenario_id: int, name: str):
         print(f"new execution created with id: {new_execution.id}")
         return {"id": new_execution.id}, 201
     except Exception:
-        message = ("Unable to save execution. "
-                   "Possibly invalid parameter provided")
+        message = "Unable to save execution. " "Possibly invalid parameter provided"
         logging.error(message)
         return message, 400
 
@@ -113,7 +120,8 @@ def change_execution_status(id: int, new_status: str):
         raise BadRequest(
             f"Not an option for the execution status: '{new_status}'. "
             f"Possible values are: "
-            f"{str.join(', ', [e.name for e in Execution.Status])}")
+            f"{str.join(', ', [e.name for e in Execution.Status])}"
+        )
     return Response(status=200)
 
 
@@ -128,11 +136,12 @@ def change_player_status(id: int, tan: str, alerted: bool):
         player = execution.players[tan]
     except KeyError:
         raise NotFound(
-            f"Player with TAN '{tan}' does not exist for execution with id {id}")
+            f"Player with TAN '{tan}' does not exist for execution with id {id}"
+        )
     if alerted:
-        Event.player_alerted(execution_id=execution.id,
-                             time=time.current_time_s(),
-                             player=player.tan).log()
+        Event.player_alerted(
+            execution_id=execution.id, time=time.current_time_s(), player=player.tan
+        ).log()
     player.alerted = not alerted
     return Response(status=200)
 

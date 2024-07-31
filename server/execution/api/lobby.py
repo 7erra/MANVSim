@@ -4,14 +4,14 @@ from flask_jwt_extended import create_access_token, jwt_required
 from flask_wtf.csrf import generate_csrf
 from flask import request, Response
 from flask_api import status
-from flask import Blueprint
+from apiflask import APIBlueprint
 
 from app_config import csrf
 from execution import run
 from execution.utils import util
 from vars import ACQUIRE_TIMEOUT
 
-api = Blueprint("api-lobby", __name__)
+api = APIBlueprint("api-lobby", __name__)
 
 
 @api.post("/login")
@@ -34,7 +34,9 @@ def login():
         player = run.active_executions[exec_id].players[tan]
         expires = datetime.timedelta(hours=12)
         additional_claims = {"exec_id": exec_id}
-        access_token = create_access_token(identity=tan, expires_delta=expires, additional_claims=additional_claims)
+        access_token = create_access_token(
+            identity=tan, expires_delta=expires, additional_claims=additional_claims
+        )
         user_creation_required = player.name is None or player.name == ""
         player.logged_in = True
         return {
@@ -42,7 +44,7 @@ def login():
             "csrf_token": generate_csrf(),
             "user_creation_required": user_creation_required,
             "user_name": "" if user_creation_required else player.name,
-            "user_role": (player.role if player.role is None else player.role.name)
+            "user_role": (player.role if player.role is None else player.role.name),
         }
     except KeyError:
         return "Invalid TAN detected. Unable to resolve player.", 400
@@ -52,11 +54,13 @@ def login():
 @jwt_required()
 @csrf.exempt
 def set_name():
-    """ Changes the name of the requesting player. """
+    """Changes the name of the requesting player."""
     try:
         form = request.get_json()
         name = form["name"]
-        force_update = form["force_update"] == "True" if "force_update" in form.keys() else False
+        force_update = (
+            form["force_update"] == "True" if "force_update" in form.keys() else False
+        )
         _, player = util.get_execution_and_player()
         with player.lock.acquire_timeout(timeout=ACQUIRE_TIMEOUT):
             if not player.name or force_update:
@@ -82,7 +86,10 @@ def get_current_exec_status():
         execution, player = util.get_execution_and_player()
 
         if execution.status == execution.Status.PENDING:
-            return Response(response="The execution has not been started yet", status=status.HTTP_204_NO_CONTENT)
+            return Response(
+                response="The execution has not been started yet",
+                status=status.HTTP_204_NO_CONTENT,
+            )
         elif execution.status == execution.Status.RUNNING and not player.alerted:
             return {
                 "starting_time": execution.starting_time,
@@ -90,7 +97,7 @@ def get_current_exec_status():
         else:
             return {
                 "starting_time": execution.starting_time,
-                "travel_time": player.activation_delay_sec
+                "travel_time": player.activation_delay_sec,
             }
     except KeyError:
         return "Invalid execution id or TAN provided. Unable to resolve data.", 400

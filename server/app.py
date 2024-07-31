@@ -3,7 +3,8 @@ import logging
 import os
 import secrets
 
-from flask import Flask, send_from_directory, redirect, make_response, jsonify
+from flask import send_from_directory, redirect, make_response, jsonify
+from apiflask import APIFlask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_sqlalchemy import SQLAlchemy
@@ -27,7 +28,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     import execution.api.setup
     import media.media_api
 
-    app = Flask(__name__, static_folder="../web/dist")
+    app = APIFlask(__name__, static_folder="../web/dist")
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
     app.config["SECRET_KEY"] = secrets.token_urlsafe(32)
     app.config["JWT_SECRET_KEY"] = secrets.token_urlsafe(32)
@@ -49,7 +50,7 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve(path):
-        """ Registers paths required for serving frontend. """
+        """Registers paths required for serving frontend."""
         if not app.static_folder:
             app.static_folder = ""
 
@@ -71,19 +72,21 @@ def create_app(csrf: CSRFProtect, db: SQLAlchemy):
     # -- ERROR Handling
     @app.errorhandler(HTTPException)
     def http_exception_handler(e: HTTPException):
-        """ Return JSON instead of HTML for HTTP errors. """
+        """Return JSON instead of HTML for HTTP errors."""
         # start with the correct headers and status code from the error
         response = make_response(e.get_response())
         # replace the body with JSON
-        response.data = json.dumps({
-            "error": e.description,
-        })
+        response.data = json.dumps(
+            {
+                "error": e.description,
+            }
+        )
         response.content_type = "application/json"
         return response
 
     @app.errorhandler(CSRFError)
     def handle_csrf_error(error: CSRFError):
-        """ Defines a specific handling for CSRF Errors"""
+        """Defines a specific handling for CSRF Errors"""
         status = error.response or 400
         return make_response(({"error": error.description}, status))
 

@@ -1,9 +1,9 @@
-from flask import Blueprint
+from apiflask import APIBlueprint
 
 import models
 from utils.decorator import admin_only
 
-web_api = Blueprint("web_api-scenario", __name__)
+web_api = APIBlueprint("web_api-scenario", __name__)
 
 
 @web_api.get("/templates")
@@ -16,7 +16,7 @@ def get_templates():
             "executions": [
                 {"id": execution.id, "name": execution.name}
                 for execution in scenario.executions
-            ]
+            ],
         }
         for scenario in models.Scenario.query
     ]

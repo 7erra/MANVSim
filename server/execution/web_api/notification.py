@@ -1,9 +1,10 @@
-from flask import Blueprint, request
+from apiflask import APIBlueprint
+from flask import request
 
 from execution import run
 from utils.decorator import admin_only
 
-web_api = Blueprint("web_api-notification", __name__)
+web_api = APIBlueprint("web_api-notification", __name__)
 
 
 @admin_only
@@ -24,4 +25,6 @@ def add_notification_to_execution():
         execution.notifications.append(notification)
         return "Post successful", 200
     except KeyError:
-        return {"error": "Unable to post notification. Invalid parameter detected."}, 400
+        return {
+            "error": "Unable to post notification. Invalid parameter detected."
+        }, 400

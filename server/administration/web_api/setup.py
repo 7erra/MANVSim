@@ -1,12 +1,12 @@
-from flask import Flask
+from apiflask import APIFlask
 from flask_login import LoginManager
 
 from administration.web_api import security, login
 from models import WebUser
 
 
-def setup(app: Flask):
-    """ Connects each implemented endpoint to flask environment and configures a login manager. """
+def setup(app: APIFlask):
+    """Connects each implemented endpoint to flask environment and configures a login manager."""
 
     login_manager = LoginManager()
     login_manager.init_app(app)

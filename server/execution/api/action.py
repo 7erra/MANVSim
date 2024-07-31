@@ -1,6 +1,7 @@
 import uuid
 
-from flask import Blueprint, request
+from apiflask import APIBlueprint
+from flask import request
 from flask_jwt_extended import jwt_required
 from werkzeug.exceptions import InternalServerError
 
@@ -12,13 +13,13 @@ from execution.entities.action import Action
 from utils import time
 from event_logging.event import Event
 
-api = Blueprint("api-action", __name__)
+api = APIBlueprint("api-action", __name__)
 
 
 @api.get("/action/all")
 @jwt_required()
 def get_all_actions():
-    """ Returns all actions stored for an execution. """
+    """Returns all actions stored for an execution."""
     execution, player = util.get_execution_and_player()
     # all actions a player can perform
     scenario_actions: list[Action] = list(execution.scenario.actions.values())
@@ -26,8 +27,11 @@ def get_all_actions():
     if not player_role:
         raise InternalServerError(f"Requesting player has no role assigned")
 
-    actions = [action.to_dict() for action in scenario_actions
-               if action.required_power <= player_role.power]
+    actions = [
+        action.to_dict()
+        for action in scenario_actions
+        if action.required_power <= player_role.power
+    ]
     return {"actions": actions}
 
 
@@ -55,7 +59,10 @@ def perform_action():
 
         # check permission and parameters
         if not player.role or player.role.power < action.required_power:
-            return "Missing right detected. You need a higher role to perform that action", 403
+            return (
+                "Missing right detected. You need a higher role to perform that action",
+                403,
+            )
 
         if len(resource_ids_used) < len(action.resources_needed):
             return "Missmatch detected. Less resources used than required", 418
@@ -63,9 +70,16 @@ def perform_action():
         # get objects from ids
         resources_used = {}
         for res_id in resource_ids_used:
-            loc, res = player.location.get_resource_by_id(res_id) if player.location else (None, None)
+            loc, res = (
+                player.location.get_resource_by_id(res_id)
+                if player.location
+                else (None, None)
+            )
             if res is None:
-                return "Unable to identify resource. Please update your location-access.", 404
+                return (
+                    "Unable to identify resource. Please update your location-access.",
+                    404,
+                )
             if loc not in resources_used.keys():
                 resources_used[loc] = [res]
             else:
@@ -115,11 +129,23 @@ def perform_action():
 
         start_time = time.current_time_s()
 
-        Event.action_performed(execution_id=execution.id, time=start_time,
-            player=player.tan, action=action.id, patient=patient_id, duration_s=action.duration_sec).log()
+        Event.action_performed(
+            execution_id=execution.id,
+            time=start_time,
+            player=player.tan,
+            action=action.id,
+            patient=patient_id,
+            duration_s=action.duration_sec,
+        ).log()
 
-        performed_action = PerformedAction(str(uuid.uuid4()), start_time + action.duration_sec,
-                                           execution.id, action, resources_locked, player.tan)
+        performed_action = PerformedAction(
+            str(uuid.uuid4()),
+            start_time + action.duration_sec,
+            execution.id,
+            action,
+            resources_locked,
+            player.tan,
+        )
         patient.action_queue[performed_action.id] = performed_action
         return {"performed_action_id": performed_action.id}
 
@@ -130,10 +156,9 @@ def perform_action():
 @api.get("/action/perform/result")
 @jwt_required()
 def get_perform_action_result():
-    """ Dequeues an action of a specific patient and applies the action to the patients' status. """
+    """Dequeues an action of a specific patient and applies the action to the patients' status."""
     execution, _ = util.get_execution_and_player()
     try:
-
         patient_id = int(request.args["patient_id"])
         perform_action_id = request.args["performed_action_id"]
 
@@ -148,7 +173,7 @@ def get_perform_action_result():
 
         return {
             "patient": patient.to_dict(),
-            "conditions": patient.activity_diagram.current.get_conditions(result_keys)
+            "conditions": patient.activity_diagram.current.get_conditions(result_keys),
         }
 
     except KeyError:
@@ -157,6 +182,6 @@ def get_perform_action_result():
 
 # Helper
 def rollback_quantity(backup: list[Resource]):
-    """ Initiates an increase operation on every resource provided in the parameter. """
+    """Initiates an increase operation on every resource provided in the parameter."""
     for res in backup:
         res.increase(force=True)

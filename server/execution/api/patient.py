@@ -1,4 +1,5 @@
-from flask import Blueprint, request
+from flask import request
+from apiflask import APIBlueprint
 from flask_jwt_extended import jwt_required
 
 from app_config import csrf
@@ -6,7 +7,7 @@ from execution.utils import util
 from event_logging.event import Event
 from utils import time
 
-api = Blueprint("api-patient", __name__)
+api = APIBlueprint("api-patient", __name__)
 
 
 @api.post("/patient/arrive")
@@ -27,19 +28,23 @@ def get_patient():
         patient = scenario.patients[patient_id]
 
         if player.location is not None:
-            return (f"Player already set to another location: "
-                    f"{player.location.id}"), 405
+            return (
+                f"Player already set to another location: " f"{player.location.id}"
+            ), 405
 
         player.location = patient.location
         player.location.add_locations(player.accessible_locations)
 
-        Event.location_arrive(execution_id=execution.id,
-                             time=time.current_time_s(),
-                             player=player.tan, patient_id=patient.id).log()
+        Event.location_arrive(
+            execution_id=execution.id,
+            time=time.current_time_s(),
+            player=player.tan,
+            patient_id=patient.id,
+        ).log()
 
         return {
             "player_location": player.location.to_dict(),
-            "patient": patient.to_dict(shallow=False)
+            "patient": patient.to_dict(shallow=False),
         }
     except KeyError:
         return "Missing or invalid request parameter detected.", 400
@@ -48,11 +53,9 @@ def get_patient():
 @api.get("/patient/all-ids")
 @jwt_required()
 def get_all_patient():
-    """ Returns all patients stored in the scenario. """
+    """Returns all patients stored in the scenario."""
     try:
         execution, _ = util.get_execution_and_player()
-        return {
-            "tans": list(execution.scenario.patients.keys())
-        }
+        return {"tans": list(execution.scenario.patients.keys())}
     except KeyError:
         return "Missing or invalid request parameter detected.", 400

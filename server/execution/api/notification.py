@@ -1,8 +1,9 @@
-from flask import Blueprint, request
+from apiflask import APIBlueprint
+from flask import request
 from flask_jwt_extended import jwt_required
 from execution.utils import util
 
-api = Blueprint("api-notification", __name__)
+api = APIBlueprint("api-notification", __name__)
 
 
 @api.get("/notifications")
@@ -25,9 +26,8 @@ def get_notifications():
 
         return {
             "notifications": execution.notifications[next_id:],
-            "next_id": len(execution.notifications)
+            "next_id": len(execution.notifications),
         }
 
     except KeyError:
         return "Invalid request-query detected.", 400
-

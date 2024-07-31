@@ -1,5 +1,5 @@
 from flask import request
-from flask import Blueprint
+from apiflask import APIBlueprint
 from flask_jwt_extended import jwt_required
 
 from app_config import csrf
@@ -8,7 +8,7 @@ from execution.entities.location import Location
 from event_logging.event import Event
 from utils import time
 
-api = Blueprint("api-location", __name__)
+api = APIBlueprint("api-location", __name__)
 
 
 @api.get("/location/all")
@@ -18,8 +18,10 @@ def get_all_toplevel_location():
         """ Returns all locations stored in the scenario. """
         execution, _ = util.get_execution_and_player()
         return {
-            "locations": [location.to_dict() for location
-                          in list(execution.scenario.locations.values())]
+            "locations": [
+                location.to_dict()
+                for location in list(execution.scenario.locations.values())
+            ]
         }
     except KeyError:
         return f"Missing or invalid request parameter detected.", 400
@@ -46,14 +48,17 @@ def get_location_out_of_location():
         # locate required parent location
         from_location: Location = execution.scenario.locations[from_loc_id]
         if from_location is None:
-            return ("From-Location not found. Update your current "
-                    "location-access."), 404
+            return (
+                "From-Location not found. Update your current " "location-access."
+            ), 404
 
         parent_location, required_location = from_location.get_child_location_by_id(
-            required_loc_id)
+            required_loc_id
+        )
         if required_location is None:
-            return ("Take-Location not found. Update your current "
-                    "location-access."), 404
+            return (
+                "Take-Location not found. Update your current " "location-access."
+            ), 404
 
         assert parent_location  # pyright
 
@@ -63,11 +68,13 @@ def get_location_out_of_location():
         if player.location:
             # add location back to first children of the tree, to make it reachable for the leave-operation.
             player.location.add_locations({required_location})
-            Event.location_take_from(execution_id=execution.id,
-                                     time=time.current_time_s(),
-                                     player=player.tan,
-                                     take_location_id=required_loc_id,
-                                     from_location_id=from_loc_id).log()
+            Event.location_take_from(
+                execution_id=execution.id,
+                time=time.current_time_s(),
+                player=player.tan,
+                take_location_id=required_loc_id,
+                from_location_id=from_loc_id,
+            ).log()
             return {"player_location": player.location.to_dict()}
         else:
             return "Invalid state detected. Player has no location assigned", 418
@@ -93,10 +100,12 @@ def leave_location():
         return "Player is not assigned to any patient/location.", 405
 
     if player.location.leave_location(player.accessible_locations):
-        Event.location_leave(execution_id=exec.id,
-                             time=time.current_time_s(),
-                             player=player.tan,
-                             leave_location_id=player.location.id).log()
+        Event.location_leave(
+            execution_id=exec.id,
+            time=time.current_time_s(),
+            player=player.tan,
+            leave_location_id=player.location.id,
+        ).log()
         player.location = None
     else:
         return "Unable to access runtime object. A timeout-error occurred.", 409

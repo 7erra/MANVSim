@@ -1,4 +1,5 @@
-from flask import Flask, request
+from apiflask import APIFlask
+from flask import request
 from flask_jwt_extended import jwt_required
 from werkzeug.exceptions import BadRequestKeyError
 
@@ -7,14 +8,15 @@ from execution.entities.execution import Execution
 from execution.utils import util
 
 
-def setup(app: Flask):
-    """ Connects each implemented endpoint to flask environment. """
+def setup(app: APIFlask):
+    """Connects each implemented endpoint to flask environment."""
 
     @patient.api.before_request
     @location.api.before_request
     @action.api.before_request
     def return_empty_if_not_running():
-        """ Blocks all run-request on an execution which is still in status pending. """
+        """Blocks all run-request on an execution which is still in status pending."""
+
         @jwt_required()
         def check_for_exec_status():
             try:

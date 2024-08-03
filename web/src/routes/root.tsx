@@ -34,6 +34,7 @@ export function Root(): ReactElement {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <NavLink to="/" name="Home" />
+              <NavLink to="/scenarios" name="Szenarios" />
               <NavLink to="/executions" name="Ausführungen" />
               <NavDropdown title="Benutzer">
                 <NavDropdown.Header>

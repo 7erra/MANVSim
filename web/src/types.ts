@@ -15,8 +15,19 @@ function isTypeFactory<T>(
   return (x: unknown): x is T => zobj.safeParse(x).success
 }
 
+const patient = z.object({
+  id: z.number(),
+  name: z.string(),
+  // TODO: find better type
+  activity_diagrim: z.any(),
+})
+
+export type Patient = z.infer<typeof patient>
+
+export const isPatient = isTypeFactory<Patient>(patient)
+
 // Template
-const template = z.object({
+const scenario = z.object({
   id: z.number(),
   name: z.string(),
   executions: z.array(
@@ -25,17 +36,18 @@ const template = z.object({
       name: z.string(),
     }),
   ),
+  patients: z.array(patient),
 })
 
-export type Template = z.infer<typeof template>
+export type Scenario = z.infer<typeof scenario>
 
 /**
  * Checks if a variable matches the Template interface
  *
  * @param {unknown} x - Variable to check
- * @returns {obj is Template} true when variable is a template
+ * @returns {obj is Scenario} true when variable is a template
  */
-export const isTemplate = isTypeFactory<Template>(template)
+export const isScenario = isTypeFactory<Scenario>(scenario)
 
 // CsrfToken
 const csrfToken = z.object({

@@ -1,11 +1,19 @@
+h3 {
+  margin-top: 1em;
+}
+
+.execution-name-header {
+  margin: 0;
+}
+
 @media screen and (min-width: 575px) {
 
   /* Hide scrollbar for Chrome, Safari and Opera */
-  #active-tan-player-table::-webkit-scrollbar {
+  .active-tan-player-table::-webkit-scrollbar {
     display: none;
   }
 
-  #active-tan-player-table {
+  .active-tan-player-table {
     /* IE and Edge */
     -ms-overflow-style: none;
     /* Firefox */
@@ -14,35 +22,35 @@
 }
 
 @media screen and (max-width: 769px) {
-  #btn-activate-icon {
+  .btn-activate-icon {
     display: inline !important;
   }
 
-  #btn-activate-text {
+  .btn-activate-text {
     display: none;
   }
 
-  #btn-play-icon {
+  .btn-play-icon {
     display: inline !important;
   }
 
-  #btn-play-text {
+  .btn-play-text {
     display: none;
   }
 
-  #btn-pause-icon {
+  .btn-pause-icon {
     display: inline !important;
   }
 
-  #btn-pause-text {
+  .btn-pause-text {
     display: none;
   }
 
-  #btn-stop-icon {
+  .btn-stop-icon {
     display: inline !important;
   }
 
-  #btn-stop-text {
+  .btn-stop-text {
     display: none;
   }
 }

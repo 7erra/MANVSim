@@ -16,7 +16,11 @@ def get_templates():
             "executions": [
                 {"id": execution.id, "name": execution.name}
                 for execution in scenario.executions
-            ]
+            ],
+            "patients": [
+                {"id": patient.id, "name": patient.name}
+                for patient in scenario.get_patients()
+            ],
         }
         for scenario in models.Scenario.query
     ]

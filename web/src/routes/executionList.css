@@ -1,4 +1,4 @@
-#active-execution-status {
+.active-execution-status {
   width: 15%;
 }
 
@@ -7,11 +7,11 @@
   margin: 0px;
 }
 
-#lobby-hover {
+.lobby-hover {
   background-color: white !important;
 }
 
-#lobby-hover:hover {
+.lobby-hover:hover {
   background-color: #cfe2ff !important;
 }
 
@@ -25,17 +25,17 @@
 }
 
 @media screen and (max-width: 769px) {
-  #active-execution-status {
+  .active-execution-status {
     margin-right: 2rem !important;
     margin-left: 10px;
   }
 
-  #active-execution-name {
+  .active-execution-name {
     padding-right: 10px !important;
     overflow: scroll;
   }
 
-  #execution-play-icon {
+  .execution-play-icon {
     display: inline !important;
   }
 
@@ -43,11 +43,11 @@
     display: none !important;
   }
 
-  #execution-save-icon {
+  .execution-save-icon {
     display: inline !important;
   }
 
-  #execution-save-text {
+  .execution-save-text {
     display: none !important;
   }
 }

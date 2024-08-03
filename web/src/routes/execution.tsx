@@ -23,7 +23,12 @@ import {
   Location,
 } from "../types"
 import { CsrfForm } from "../components/CsrfForm"
-import { getExecution, togglePlayerStatus, createNewPlayer, pushNotificationToPlayer } from "../api"
+import {
+  getExecution,
+  togglePlayerStatus,
+  createNewPlayer,
+  pushNotificationToPlayer,
+} from "../api"
 import { TanCard } from "../components/TanCard"
 import { PlayerStatus } from "../components/PlayerStatus"
 import { ExecutionStatus } from "../components/ExecutionStatus"
@@ -73,19 +78,27 @@ export function ExecutionRoute() {
     <div>
       {execution ? (
         <div>
-          <h2 id="execution-name-header" className="align-self-center mt-3">
-            {execution.name} - {executionId}
+          <h2 className="align-self-center mt-3 execution-name-header">
+            {execution.name}-{executionId}
           </h2>
           <ExecutionStatus execution={execution} />
           <section id="notification-input" className="mt-3">
-            <CsrfForm id="notification-input-form" method="POST" className="d-flex flex-column mb-3">
+            <CsrfForm
+              id="notification-input-form"
+              method="POST"
+              className="d-flex flex-column mb-3"
+            >
               <div className="d-flex mt-2">
                 <FormLabel className="fs-5 mt-2 me-4">Nachrichten</FormLabel>
                 <div className="d-flex justify-content-center ms-auto">
-                  <Button className={`align-self-center ${execution.status == "PENDING" || execution.status == "RUNNING" ? "" : "disabled"}`} type="submit">
+                  <Button
+                    className={`align-self-center ${execution.status == "PENDING" || execution.status == "RUNNING" ? "" : "disabled"}`}
+                    type="submit"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="16" height="16"
+                      width="16"
+                      height="16"
                       fill="currentColor"
                       className="bi bi-send"
                       viewBox="0 0 16 16"
@@ -96,7 +109,14 @@ export function ExecutionRoute() {
                 </div>
               </div>
               <input type="hidden" name="id" value="post-notification" />
-              <textarea className="mr-2 mt-2" name="notification" form="notification-input-form" rows={2} cols={120} required></textarea>
+              <textarea
+                className="mr-2 mt-2"
+                name="notification"
+                form="notification-input-form"
+                rows={2}
+                cols={120}
+                required
+              ></textarea>
             </CsrfForm>
           </section>
           <section id="notification-display">
@@ -208,12 +228,9 @@ export function ExecutionRoute() {
               )}
             </Container>
           </section>
-          <section
-            id="active-tan-player-table"
-            className="overflow-scroll w-100"
-          >
+          <section className="overflow-scroll w-100 active-tan-player-table">
             <h3 className="mt-5">Aktive TANs:</h3>
-            <table id="active-tan-player" className="table">
+            <table className="table active-tan-player">
               <thead>
                 <tr>
                   <th>TAN</th>

@@ -10,6 +10,13 @@ class Scenario(db.Model):
     executions: Mapped[List["Execution"]] = relationship(
         back_populates="scenario")
 
+    def get_patients(self):
+        return db.session.execute(
+            db.select(Patient)
+            .join(TakesPartIn, TakesPartIn.patient_id == Patient.id)
+            .where(TakesPartIn.scenario_id == self.id)
+        ).scalars().all()
+
 
 class Execution(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

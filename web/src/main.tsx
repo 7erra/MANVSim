@@ -13,6 +13,7 @@ import { LoginRoute } from "./routes/login"
 import { CsrfProvider } from "./contexts/csrf"
 import { AuthProvider } from "./contexts/auth"
 import { ExecutionRoute } from "./routes/execution"
+import { ScenarioList } from "./routes/scenarioList"
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,11 @@ const router = createBrowserRouter([
         element: <ExecutionRoute />,
         loader: ExecutionRoute.loader,
         action: ExecutionRoute.action,
+      },
+      {
+        path: "/scenarios",
+        element: <ScenarioList />,
+        loader: ScenarioList.loader,
       },
     ],
   },

@@ -4,16 +4,16 @@ import {
   useLoaderData,
   useNavigate,
 } from "react-router"
-import { getActiveExecutions, getTemplates, tryFetchJson } from "../api"
+import { getActiveExecutions, getScenarios, tryFetchJson } from "../api"
 import { Accordion } from "react-bootstrap"
-import { ExecutionData, Template } from "../types"
+import { ExecutionData, Scenario } from "../types"
 import { ReactElement } from "react"
 import { TemplateEntry } from "../components/templateEntry"
 
 import "./executionList.css"
 
 type ExecutionsLoaderData = {
-  templates: Array<Template>
+  templates: Array<Scenario>
   activeExecutions: Array<ExecutionData>
 }
 
@@ -30,10 +30,10 @@ export function ExecutionListRoute(): ReactElement {
           <div className="mb-5">
             {activeExecutions.map((item) => (
               <li className="d-flex border p-1 flex-row" key={item.id}>
-                <div id="active-execution-name" className="ms-2 me-auto d-flex">
+                <div className="ms-2 me-auto d-flex active-execution-name">
                   <span className="align-self-center">{item.name}</span>
                 </div>
-                <div id="active-execution-status" className=" d-flex">
+                <div className="d-flex active-execution-status">
                   <span
                     className="align-self-center"
                     style={{ color: getColor(item.status) }}
@@ -41,10 +41,7 @@ export function ExecutionListRoute(): ReactElement {
                     {item.status}
                   </span>
                 </div>
-                <div
-                  id="active-execution-button-manage"
-                  className="ms-5 d-flex"
-                >
+                <div className="ms-5 d-flex">
                   <button
                     className="btn btn-secondary me-2 align-self-center"
                     onClick={() => navigate(`/execution/${item.id}`)}
@@ -78,7 +75,7 @@ export function ExecutionListRoute(): ReactElement {
         </div>
         {templates.length ? (
           <Accordion>
-            {templates.map((t: Template, index: number) => (
+            {templates.map((t: Scenario, index: number) => (
               <TemplateEntry key={t.id} template={t} index={index} />
             ))}
           </Accordion>
@@ -93,10 +90,10 @@ export function ExecutionListRoute(): ReactElement {
 }
 
 ExecutionListRoute.loader = async function (): Promise<{
-  templates: Template[]
+  templates: Scenario[]
   activeExecutions: ExecutionData[]
 }> {
-  const templates = await getTemplates()
+  const templates = await getScenarios()
   const activeExecutions = await getActiveExecutions()
   return { templates, activeExecutions }
 }

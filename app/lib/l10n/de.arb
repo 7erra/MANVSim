@@ -108,11 +108,27 @@
   "actionFailure": "Leider konnte diese Maßnahme nicht ausgeführt werden.\nGehe sicher, dass genügend Resourcen verfügbar sind und versuche es erneut.",
 
   "notificationScreenName": "Benachrichtigungen",
-
-  "patientSelectScreenName": "Home",
-  "patientSelectTextField": "Patienten ID",
-  "patientSelectSubmit": "Patient anzeigen",
-
+  "selectScreenName": "Home",
+  "selectScreenTypePatient": "Patient",
+  "selectScreenTypeLocation": "Location",
+  "selectScreenTextField": "{type} ID",
+  "@homeSelectedTextField": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Patienten"
+      }
+    }
+  },
+  "selectScreenSubmit": "{type} anzeigen",
+  "@homeSelectedSubmit": {
+    "placeholders": {
+      "type": {
+        "type": "String",
+        "example": "Patienten"
+      }
+    }
+  },
   "qrCodeScanButton"  : "QR Code scannen",
 
   "ok": "Ok"

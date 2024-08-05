@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manvsim/screens/map_screen.dart';
 import 'package:manvsim/screens/notifications_screen.dart';
 import 'package:manvsim/screens/patient_list_screen.dart';
 import 'package:manvsim/screens/patient_select_screen.dart';
@@ -27,24 +28,26 @@ class _AppFrameState extends State<AppFrame> {
         selectedIndex: currentPageIndex,
         destinations: <Widget>[
           NavigationDestination(
-            selectedIcon: const Icon(Icons.home),
-            icon: const Icon(Icons.home_outlined),
-            label: AppLocalizations.of(context)!.frameHome,
-          ),
+              selectedIcon: const Icon(Icons.home),
+              icon: const Icon(Icons.home_outlined),
+              label: AppLocalizations.of(context)!.frameHome),
+          NavigationDestination(
+              selectedIcon: const Icon(Icons.map_outlined),
+              icon: const Icon(Icons.map),
+              label: AppLocalizations.of(context)!.frameMap),
           NavigationDestination(
               selectedIcon: const Icon(Icons.list_outlined),
               icon: const Icon(Icons.list),
-              label: AppLocalizations.of(context)!.framePatients
-          ),
+              label: AppLocalizations.of(context)!.framePatients),
           NavigationDestination(
-            icon: const Badge(child: Icon(Icons.notifications_sharp)),
-            label: AppLocalizations.of(context)!.frameNotifications,
-          ),
+              icon: const Badge(child: Icon(Icons.notifications_sharp)),
+              label: AppLocalizations.of(context)!.frameNotifications),
         ],
       ),
       body: const <Widget>[
         /// Home page
         PatientSelectScreen(),
+        PatientMapScreen(),
         PatientListScreen(),
         NotificationsScreen()
       ][currentPageIndex],
